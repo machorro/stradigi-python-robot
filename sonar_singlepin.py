@@ -10,22 +10,23 @@ import RPi.GPIO as GPIO
 # Define some functions
 # -----------------------
 
-def measure():
+def measure(PIN):
   # This function measures a distance
   # Pulse the trigger/echo line to initiate a measurement
-  GPIO.output(GPIO_TRIGECHO, True)
+  GPIO.setup(PIN,GPIO.OUT)  # Initial state as output
+  GPIO.output(PIN, True)
   time.sleep(0.00001)
-  GPIO.output(GPIO_TRIGECHO, False)
+  GPIO.output(PIN, False)
   #ensure start time is set in case of very quick return
   start = time.time()
 
   # set line to input to check for start of echo response
-  GPIO.setup(GPIO_TRIGECHO, GPIO.IN)
-  while GPIO.input(GPIO_TRIGECHO)==0:
+  GPIO.setup(PIN, GPIO.IN)
+  while GPIO.input(PIN)==0:
     start = time.time()
 
   # Wait for end of echo response
-  while GPIO.input(GPIO_TRIGECHO)==1:
+  while GPIO.input(PIN)==1:
     stop = time.time()
   
   #GPIO.setup(GPIO_TRIGECHO, GPIO.OUT)
@@ -45,14 +46,17 @@ def measure():
 GPIO.setmode(GPIO.BCM)
 
 # Define GPIO to use on Pi
-GPIO_TRIGECHO = 23
+GPIO_TRIGECHO23 = 23
+GPIO_TRIGECHO24 = 24
 
 
 # Set pins as output and input
-GPIO.setup(GPIO_TRIGECHO,GPIO.OUT)  # Initial state as output
+GPIO.setup(GPIO_TRIGECHO23,GPIO.OUT)  # Initial state as output
+GPIO.setup(GPIO_TRIGECHO24,GPIO.OUT)  # Initial state as output
 
 # Set trigger to False (Low)
-GPIO.output(GPIO_TRIGECHO, False)
+GPIO.output(GPIO_TRIGECHO23, False)
+GPIO.output(GPIO_TRIGECHO24, False)
 print "Waiting For Sensor To Settle"
 time.sleep(2)
 
@@ -65,8 +69,10 @@ try:
 
   while True:
 
-    distance = measure()
-    print "  Distance : %.1f cm" % distance
+    distance1 = measure(GPIO_TRIGECHO23)
+    distance2 = measure(GPIO_TRIGECHO24)
+    print "  Distance1 : %.1f cm" % distance1
+    print "  Distance2 : %.1f cm" % distance2
     time.sleep(1)
 
 except KeyboardInterrupt:
