@@ -11,8 +11,10 @@ class TheBrain(object):
 		self._sonar1 = SonarMeasure(23)
 		pass # end constructor
 
-	def run():
+	def run(self):
+		print "Starting"
 		while (True):
+			print "Loop"
 			sonar1Result = self._sonar1.doWork()
 			if sonar1Result[0] == True:
 				print sonar1Result[1]
@@ -26,5 +28,4 @@ class TheBrain(object):
 	pass # end class
 
 brain = TheBrain()
-brain.run
-
+brain.run()

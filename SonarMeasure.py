@@ -24,7 +24,7 @@ class SonarMeasure(object):
 		GPIO.setup(self._pin, GPIO.IN)
 		pass # end constructor
 		
-	def doWork():
+	def doWork(self):
 		# check if it settled
 		if GPIO.input(self._pin)==0:
 			self._startTime = time.time()
