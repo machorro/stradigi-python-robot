@@ -48,15 +48,18 @@ GPIO.setmode(GPIO.BCM)
 # Define GPIO to use on Pi
 GPIO_TRIGECHO23 = 23
 GPIO_TRIGECHO24 = 24
+GPIO_TRIGECHO25 = 25
 
 
 # Set pins as output and input
 GPIO.setup(GPIO_TRIGECHO23,GPIO.OUT)  # Initial state as output
 GPIO.setup(GPIO_TRIGECHO24,GPIO.OUT)  # Initial state as output
+GPIO.setup(GPIO_TRIGECHO25,GPIO.OUT)  # Initial state as output
 
 # Set trigger to False (Low)
 GPIO.output(GPIO_TRIGECHO23, False)
 GPIO.output(GPIO_TRIGECHO24, False)
+GPIO.output(GPIO_TRIGECHO25, False)
 print "Waiting For Sensor To Settle"
 time.sleep(2)
 
@@ -71,8 +74,10 @@ try:
 
     distance1 = measure(GPIO_TRIGECHO23)
     distance2 = measure(GPIO_TRIGECHO24)
+    distance3 = measure(GPIO_TRIGECHO25)
     print "  Distance1 : %.1f cm" % distance1
     print "  Distance2 : %.1f cm" % distance2
+    print "  Distance3 : %.1f cm" % distance3
     time.sleep(1)
 
 except KeyboardInterrupt:
