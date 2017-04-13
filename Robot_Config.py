@@ -2,9 +2,10 @@ import ConfigParser
 import argparse
 
 class RobotConfig(object):    
-    _pin_sonar0 = 23
-    _pin_sonar1 = 24
-    _pin_sonar2 = 25
+    _pin_sonar0 = 23 # RIGHT
+    _pin_sonar1 = 24 # FRONT
+    _pin_sonar2 = 25 # LEFT
+    _dist = 40
     
     _left_trim = 0
     _right_trim = 0
@@ -30,6 +31,7 @@ class RobotConfig(object):
             
             self._left_trim = config.getint('MOTOR', 'LeftTrim')
             self._right_trim = config.getint('MOTOR', 'RightTrim')
+            self._dist = config.getint('SONAR', 'Distance')
             pass
         except:
             print "Not using a config file"

@@ -12,27 +12,31 @@ LEFT_TRIM   = robot_config._left_trim
 RIGHT_TRIM  = robot_config._right_trim
 
 # Define GPIO to use on Pi
-GPIO_TRIGECHO23 = robot_config._pin_sonar0
-GPIO_TRIGECHO24 = robot_config._pin_sonar1
-GPIO_TRIGECHO25 = robot_config._pin_sonar2
+GPIO_TRIGECHO_RIGHT = robot_config._pin_sonar0
+GPIO_TRIGECHO_FRONT = robot_config._pin_sonar1
+GPIO_TRIGECHO_LEFT = robot_config._pin_sonar2
 
-dist = 40 
+#dist = 40
+dist = robot_config._dist 
+did_turn = False
 
 try:
-    Measure_init(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25)
+    Measure_init(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
     robot = Robot2.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
         print "after"
-        distance1, distance2, distance3 = Measure_dist(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25)
+        distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
         print distance1
         print distance2
         print distance3
-        # when either of distances is less than 10 cm, robot stops
-        if distance1<dist or distance2<dist or distance3<dist :
-            robot.stop()
-            print "I should stop!"
-            break
+
+        # first obstacle
+        if (distance_front < dist):
+            # stop and turn
+            robot.right(200, 0.5)
+            did_turn = True
+            pass
 
         robot.forward(255, None)
         pass
