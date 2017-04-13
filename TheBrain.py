@@ -53,7 +53,7 @@ class TheBrain(object):
         except KeyboardInterrupt:
             # User pressed CTRL-C
             # Reset GPIO settings
-             GPIO.cleanup()
+            GPIO.cleanup()
             pass
     pass # end class
 

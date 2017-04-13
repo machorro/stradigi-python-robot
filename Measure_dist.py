@@ -6,6 +6,8 @@
 import time
 import RPi.GPIO as GPIO
 
+is_first = True
+
 # -----------------------
 # Define some functions
 # -----------------------
@@ -53,7 +55,11 @@ def Measure_dist(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25):
     GPIO.output(GPIO_TRIGECHO24, False)
     GPIO.output(GPIO_TRIGECHO25, False)
     print "Waiting For Sensor To Settle"
-    time.sleep(2)
+
+    global is_first
+    if is_first:
+        time.sleep(2)
+        is_first = False
 
     distance1 = measure(GPIO_TRIGECHO23)
     distance2 = measure(GPIO_TRIGECHO24)
