@@ -25,10 +25,12 @@ def measure(PIN):
   # set line to input to check for start of echo response
   GPIO.setup(PIN, GPIO.IN)
   while GPIO.input(PIN)==0:
+#    print "waiting on loop 1 on pin " + str(PIN)
     start = time.time()
 
   # Wait for end of echo response
   while GPIO.input(PIN)==1:
+#    print "waiting on loop 2 on pin " + str(PIN)
     stop = time.time()
   
   #GPIO.setup(GPIO_TRIGECHO, GPIO.OUT)
@@ -38,29 +40,25 @@ def measure(PIN):
   distance = elapsed * 17150
   return distance
 
-
-def Measure_dist(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25):
+def Measure_init(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25):
+    GPIO.setmode(GPIO.BCM)
 
     # Use BCM GPIO references
-    # instead of physical pin numbers
-    GPIO.setmode(GPIO.BCM)
-    
     # Set pins as output and input
     GPIO.setup(GPIO_TRIGECHO23,GPIO.OUT)  # Initial state as output
     GPIO.setup(GPIO_TRIGECHO24,GPIO.OUT)  # Initial state as output
     GPIO.setup(GPIO_TRIGECHO25,GPIO.OUT)  # Initial state as output
-
+    
     # Set trigger to False (Low)
     GPIO.output(GPIO_TRIGECHO23, False)
     GPIO.output(GPIO_TRIGECHO24, False)
     GPIO.output(GPIO_TRIGECHO25, False)
     print "Waiting For Sensor To Settle"
 
-    global is_first
-    if is_first:
-        time.sleep(2)
-        is_first = False
+    time.sleep(2)
+    pass
 
+def Measure_dist(GPIO_TRIGECHO23,GPIO_TRIGECHO24,GPIO_TRIGECHO25):
     distance1 = measure(GPIO_TRIGECHO23)
     distance2 = measure(GPIO_TRIGECHO24)
     distance3 = measure(GPIO_TRIGECHO25)
