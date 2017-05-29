@@ -71,6 +71,7 @@ try:
                     robot.left_ang_90()
                     robot.forward(100, 3)
                     robot.stop()
+                    # after traversing the whole we should reset
                     pass
                 break
                 pass
