@@ -136,10 +136,10 @@ class Robot(object):
             self.stop()
 
     def left_ang_90(self):
-        self.right(200, 0.7)
+        self.right(170, 1.2)
         pass
 
     def right_ang_90(self):
-        self.left(200, 0.7)
+        self.left(170, 1.2)
         pass
 

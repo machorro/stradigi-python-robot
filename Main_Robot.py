@@ -21,6 +21,9 @@ dist = robot_config._dist
 did_turn_right = False
 did_turn_left = False
 
+turn_start_timer = None
+turn_end_timer = None
+
 try:
     #Measure_init(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
     print GPIO_TRIGECHO_RIGHT
@@ -29,11 +32,11 @@ try:
     robot = Robot2.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
-        print "after"
+#        print "after"
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
-        print distance_left
+ #       print distance_left
         print distance_front
-        print distance_right
+        #print distance_right
 
         # Always check front
         if (distance_front < dist):
@@ -41,14 +44,36 @@ try:
             robot.right_ang_90()
             did_turn_right = True
             print "Turning right"
+            continue
             pass
 
         # Did we turn?
         if (did_turn_right):
+            
+            print "left = " + str(distance_left)
             # check the left sensor
-            if (distance_left > dist):
-                print "Nothing on the left"
-                robot.stop() 
+
+            if (turn_start_timer == None and distance_left > dist):
+                turn_start_timer = time.time()
+                print "Nothing on the left; timer started"
+            pass
+
+            if (turn_start_timer != None and distance_left <= dist):
+                turn_end_timer = time.time()
+                diff = turn_end_timer - turn_start_timer
+                print "Diff time = " + str(diff)
+                distance = diff * 0.3 * 100 # cm
+                # 120cm, 0.3m / s
+                print "Space length = " + str(distance)
+
+                if (distance >= 20 + 6):
+                    robot.backward(100, diff/1.5)
+                    robot.left_ang_90()
+                    robot.forward(100, 3)
+                    robot.stop()
+                    pass
+                break
+                pass
             pass
 
         # Else go forward
