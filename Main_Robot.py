@@ -4,7 +4,7 @@ import time
 from Robot_Config import RobotConfig
 import Robot2
 from Measure_dist import Measure_dist
-from Measure_dist import Measure_init
+#from Measure_dist import Measure_init
 
 robot_config = RobotConfig()
 
@@ -18,27 +18,41 @@ GPIO_TRIGECHO_LEFT = robot_config._pin_sonar2
 
 #dist = 40
 dist = robot_config._dist 
-did_turn = False
+did_turn_right = False
+did_turn_left = False
 
 try:
-    Measure_init(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
+    #Measure_init(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
+    print GPIO_TRIGECHO_RIGHT
+    print GPIO_TRIGECHO_FRONT
+    print GPIO_TRIGECHO_LEFT
     robot = Robot2.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
         print "after"
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
-        print distance1
-        print distance2
-        print distance3
+        print distance_left
+        print distance_front
+        print distance_right
 
-        # first obstacle
+        # Always check front
         if (distance_front < dist):
-            # stop and turn
-            robot.right(200, 0.5)
-            did_turn = True
+            # stop and turn; mark the turn
+            robot.right_ang_90()
+            did_turn_right = True
+            print "Turning right"
             pass
 
-        robot.forward(255, None)
+        # Did we turn?
+        if (did_turn_right):
+            # check the left sensor
+            if (distance_left > dist):
+                print "Nothing on the left"
+                robot.stop() 
+            pass
+
+        # Else go forward
+        robot.forward(100, None)
         pass
 
         

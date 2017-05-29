@@ -73,11 +73,11 @@ try:
   while True:
 
     distance1 = measure(GPIO_TRIGECHO23)
-    distance2 = measure(GPIO_TRIGECHO24)
-    distance3 = measure(GPIO_TRIGECHO25)
+    #distance2 = measure(GPIO_TRIGECHO24)
+    #distance3 = measure(GPIO_TRIGECHO25)
     print "  Distance1 : %.1f cm" % distance1
-    print "  Distance2 : %.1f cm" % distance2
-    print "  Distance3 : %.1f cm" % distance3
+    #print "  Distance2 : %.1f cm" % distance2
+    #print "  Distance3 : %.1f cm" % distance3
     time.sleep(1)
 
 except KeyboardInterrupt:

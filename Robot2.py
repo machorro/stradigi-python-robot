@@ -134,3 +134,12 @@ class Robot(object):
         if seconds is not None:
             time.sleep(seconds)
             self.stop()
+
+    def left_ang_90(self):
+        self.right(200, 0.7)
+        pass
+
+    def right_ang_90(self):
+        self.left(200, 0.7)
+        pass
+
