@@ -35,15 +35,18 @@ try:
 #        print "after"
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
  #       print distance_left
-        print distance_front
+        # print distance_front
         #print distance_right
 
         # Always check front
         if (distance_front < dist):
             # stop and turn; mark the turn
-            robot.right_ang_90()
-            did_turn_right = True
-            print "Turning right"
+            if (distance_right < distance_left):
+                robot.left_ang_90()
+                did_turn_left = True
+            else:
+                robot.right_ang_90()
+                did_turn_right = True
             continue
             pass
 
@@ -84,4 +87,3 @@ try:
         
 except KeyboardInterrupt:
     GPIO.cleanup()
-
