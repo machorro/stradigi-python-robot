@@ -6,6 +6,8 @@
 import time
 import atexit
 
+from Robot_Config import RobotConfig
+
 from Adafruit_MotorHAT import Adafruit_MotorHAT
 
 
@@ -41,6 +43,10 @@ class Robot(object):
         # Configure all motors to stop at program exit if desired.
         if stop_at_exit:
             atexit.register(self.stop)
+            
+    def set_robot(self, robot_config):
+        self._robot_config = robot_config
+        pass
 
     def _left_speed(self, speed):
         """Set the speed of the left motor, taking into account its trim offset.
@@ -136,10 +142,11 @@ class Robot(object):
             self.stop()
 
     def left_ang_90(self):
-        self.right(170, 1.2)
+        #self.right(170, 1.2)
+        self.right(self._robot_config._rotationSpeed, self._robot_config._rotationDuration)
         pass
 
     def right_ang_90(self):
-        self.left(170, 1.2)
+        #self.left(170, 1.2)
+        self.left(self._robot_config._rotationSpeed, self._robot_config._rotationDuration)
         pass
-

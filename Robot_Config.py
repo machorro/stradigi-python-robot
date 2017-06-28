@@ -2,6 +2,9 @@ import ConfigParser
 import argparse
 
 class RobotConfig(object):    
+    _env = "CARPET"
+    _rotationSpeed = 170
+    _rotationDuration = 0.7
     _pin_sonar0 = 23 # RIGHT
     _pin_sonar1 = 24 # FRONT
     _pin_sonar2 = 25 # LEFT
@@ -21,10 +24,18 @@ class RobotConfig(object):
         
         # parse config file
         try:
+            print config_name
             config = ConfigParser.ConfigParser()
             config.readfp(open(config_name))
             print "Using config file: '" + config_name + "'"
         
+            self._env = config.get('DEFAULT', 'Environment')
+            
+            self._rotationSpeed = config.getfloat(self._env, 'RotationSpeed')
+            self._rotationDuration = config.getfloat(self._env, 'RotationDuration')
+            
+            print "Rotation Duration = " + str(self._rotationDuration)
+            
             self._pin_sonar0 = config.getint('SONAR', 'PinSonar0')
             self._pin_sonar1 = config.getint('SONAR', 'PinSonar1')
             self._pin_sonar2 = config.getint('SONAR', 'PinSonar2')
@@ -33,8 +44,9 @@ class RobotConfig(object):
             self._right_trim = config.getint('MOTOR', 'RightTrim')
             self._dist = config.getint('SONAR', 'Distance')
             pass
-        except:
-            print "Not using a config file"
+        except (RuntimeError, TypeError, NameError):
+            print NameError
+            print "Not using a config file "
             pass
         pass
 
