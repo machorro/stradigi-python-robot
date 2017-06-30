@@ -4,7 +4,7 @@
 import time
 
 # Import the Robot.py file (must be in the same directory as this file!).
-import Robot2
+import Robot
 
 
 # Set the trim offset for each motor (left and right).  This is a value that
