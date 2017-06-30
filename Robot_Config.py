@@ -31,9 +31,10 @@ class RobotConfig(object):
         
             self._env = config.get('DEFAULT', 'Environment')
             
-            self._rotationSpeed = config.getfloat(self._env, 'RotationSpeed')
+            self._rotationSpeed = config.getint(self._env, 'RotationSpeed')
             self._rotationDuration = config.getfloat(self._env, 'RotationDuration')
             
+            print "Rotation Speed = " + str(self._rotationSpeed)
             print "Rotation Duration = " + str(self._rotationDuration)
             
             self._pin_sonar0 = config.getint('SONAR', 'PinSonar0')
