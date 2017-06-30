@@ -6,7 +6,7 @@ from Robot_Config import RobotConfig
 
 robot_config = RobotConfig()
 
-import Robot2
+import Robot
 from Measure_dist import Measure_dist
 import RPi.GPIO as GPIO
 #from Measure_dist import Measure_init
@@ -68,7 +68,7 @@ try:
     print GPIO_TRIGECHO_RIGHT
     print GPIO_TRIGECHO_FRONT
     print GPIO_TRIGECHO_LEFT
-    robot = Robot2.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
+    robot = Robot.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     robot.set_robot(robot_config)
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way

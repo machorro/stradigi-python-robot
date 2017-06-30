@@ -7,7 +7,6 @@ import time
 import atexit
 
 from Robot_Config import RobotConfig
-
 from Adafruit_MotorHAT import Adafruit_MotorHAT
 
 
