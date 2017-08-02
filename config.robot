@@ -1,5 +1,5 @@
 [DEFAULT]
-Environment = CARPET
+Environment = WOOD
 
 [SONAR]
 PinSonar0 = 23

@@ -11,6 +11,8 @@ from Measure_dist import Measure_dist
 import RPi.GPIO as GPIO
 #from Measure_dist import Measure_init
 
+from recognize_obstacle import *
+
 LEFT_TRIM   = robot_config._left_trim
 RIGHT_TRIM  = robot_config._right_trim
 
@@ -70,6 +72,10 @@ try:
     print GPIO_TRIGECHO_LEFT
     robot = Robot.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     robot.set_robot(robot_config)
+    
+    # initialize recognize_obstacle module
+    recognize_obstacle_init()
+    
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
@@ -77,6 +83,13 @@ try:
         # Always check front
         if (distance_front < dist_threshold):
             # stop and turn; mark the turn
+            # go to deeplearning function 
+            #if the top prediction is X do the rest
+            results='chair'
+            if results in recognize_obstacle_process():
+                robot.stop()
+                break
+            #else don't move
             if (distance_right < distance_left):
                 print("turned left")
                 robot.left_ang_90()
