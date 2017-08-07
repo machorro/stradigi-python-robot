@@ -60,6 +60,7 @@ DATA_URL = 'http://download.tensorflow.org/models/image/imagenet/inception-2015-
 
 def get_camera_image():
 	print("Taking picture")
+	image_name = "storage_image.jpeg"
 
 	stream = io.BytesIO()
 	with picamera.PiCamera() as camera:
@@ -72,12 +73,12 @@ def get_camera_image():
 	
 	stream.seek(0)
  	image = Image.open(stream)
- 	image.save('storage_image.jpeg', "JPEG")
+ 	image.save(image_name, "JPEG")
 
  	#img = skimage.img_as_float(image).astype(np.float32)
 	print("Done taking picture")
 
-	return image
+	return image_name
 	pass
 
 class NodeLookup(object):
@@ -148,6 +149,8 @@ class NodeLookup(object):
 def create_graph():
   """Creates a graph from saved GraphDef file and returns a saver."""
   # Creates graph from saved graph_def.pb.
+  global FLAGS
+  print(FLAGS)
   with tf.gfile.FastGFile(os.path.join(
       FLAGS.model_dir, '/home/pi/stradigi-python-robot/tensor/imagenet/classify_image_graph_def.pb'), 'rb') as f:
     graph_def = tf.GraphDef()
@@ -164,6 +167,8 @@ def run_inference_on_image(image):
   Returns:
     Nothing
   """
+  print("Will load image named " + image)
+  
   if not tf.gfile.Exists(image):
     tf.logging.fatal('File does not exist %s', image)
   image_data = tf.gfile.FastGFile(image, 'rb').read()
@@ -200,6 +205,7 @@ def run_inference_on_image(image):
 
 def maybe_download_and_extract():
   """Download and extract model tar file."""
+  global FLAGS
   dest_directory = FLAGS.model_dir
   if not os.path.exists(dest_directory):
     os.makedirs(dest_directory)
@@ -217,12 +223,7 @@ def maybe_download_and_extract():
   tarfile.open(filepath, 'r:gz').extractall(dest_directory)
 
 def recognize_obstacle_init():
-  # Creates graph from saved GraphDef.
-  create_graph()
-  maybe_download_and_extract()
-  pass
-  
-def recognize_obstacle_process():
+  global parser
   parser = argparse.ArgumentParser()
   # classify_image_graph_def.pb:
   #   Binary representation of the GraphDef protocol buffer.
@@ -252,11 +253,25 @@ def recognize_obstacle_process():
       default=5,
       help='Display this many predictions.'
   )
+  
+  global FLAGS
   FLAGS, unparsed = parser.parse_known_args()
   #tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+  print(FLAGS)
 
-  image = get_camera_image()
-  return run_inference_on_image(image)
+  # Creates graph from saved GraphDef.
+  print("Will create graph")
+  create_graph()
+  print("Done creating graph")
+  maybe_download_and_extract()
+  print("Done donwloading data")
+  pass
+  
+def recognize_obstacle_process():
+  print("Getting image")
+  image_name = get_camera_image()
+  print("Run Image Brain")
+  return run_inference_on_image(image_name)
 
 def main(_):
   # Creates graph from saved GraphDef.
@@ -301,5 +316,6 @@ if __name__ == '__main__':
   )
   FLAGS, unparsed = parser.parse_known_args()
   #tf.app.run(main=main, argv=[sys.argv[0]] + unparsed)
+
 
 

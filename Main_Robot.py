@@ -78,8 +78,10 @@ try:
     
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
+        print("Get distance");
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
-
+        print("Done getting distance");
+        
         # Always check front
         if (distance_front < dist_threshold):
             # stop and turn; mark the turn
