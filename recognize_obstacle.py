@@ -198,7 +198,7 @@ def run_inference_on_image(image):
       human_string = node_lookup.id_to_string(node_id)
       score = predictions[node_id]
       print('%s (score = %.5f)' % (human_string, score))
-      result_list += human_string
+      result_list=np.append(result_list, human_string)
       
     return result_list
 
