@@ -88,3 +88,10 @@ ENV/
 # Rope project settings
 .ropeproject
 .DS_Store
+
+# images
+*.jpeg
+*.jpg
+
+# tensor
+imagenet/

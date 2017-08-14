@@ -11,6 +11,8 @@ from Measure_dist import Measure_dist
 import RPi.GPIO as GPIO
 #from Measure_dist import Measure_init
 
+from recognize_obstacle import *
+
 LEFT_TRIM   = robot_config._left_trim
 RIGHT_TRIM  = robot_config._right_trim
 
@@ -70,13 +72,37 @@ try:
     print GPIO_TRIGECHO_LEFT
     robot = Robot.Robot(left_trim=LEFT_TRIM, right_trim=RIGHT_TRIM)
     robot.set_robot(robot_config)
+    
+    # initialize recognize_obstacle module
+    recognize_obstacle_init()
+    
+    shouldStop = False
+    
     while True:
         # robot moves formward only for 100 sec for now if no obstacle is on its way
+        print("Get distance");
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
-
+        print("Done getting distance");
+        
         # Always check front
         if (distance_front < dist_threshold):
+            print ("Stopping and checking")
+            robot.stop()
+            
             # stop and turn; mark the turn
+            # go to deeplearning function 
+            #if the top prediction is X do the rest
+            print("Looking around")
+            results='beer'
+            for name in recognize_obstacle_process():
+                print("Name = " + name)
+#                 indices = [i for i, s in enumerate(mylist) if 'aa' in s]
+                if results in name:
+                	shouldStop= True
+                	break                
+            if (shouldStop):
+                break
+            #else don't move
             if (distance_right < distance_left):
                 print("turned left")
                 robot.left_ang_90()
@@ -114,3 +140,6 @@ try:
         
 except KeyboardInterrupt:
     GPIO.cleanup()
+    
+print("End of program")
+
