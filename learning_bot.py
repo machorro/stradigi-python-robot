@@ -129,7 +129,8 @@ def loop():
     elif left_prediction > right_prediction:
         #go left
         print "Turn left"
-        robot.left_ang_90()
+        # robot.left_ang_90()
+        robot.left(100, 1.2)
 
         predicted_reward = left_prediction
         actual_reward = receive_reward(fr_d, fl_d, fm_d, False)
