@@ -9,6 +9,15 @@ robot_config = RobotConfig()
 import Robot
 from Measure_dist import Measure_dist
 import RPi.GPIO as GPIO
+
+# Telegram
+import sys
+import time
+import telepot
+from telepot.loop import MessageLoop
+import apiai
+import json
+
 #from Measure_dist import Measure_init
 
 from recognize_obstacle import *
@@ -28,6 +37,49 @@ did_turn_left = False
 
 turn_start_timer = None
 turn_end_timer = None
+
+##
+## Telegram configs
+CLIENT_ACCESS_TOKEN="083c4744cc654ecd937ca7912f81baf7"
+
+look_obj = None
+
+def telegram_handle(msg):
+    print(msg)
+    global look_obj
+    content_type, chat_type, chat_id = telepot.glance(msg)
+    print(content_type, chat_type, chat_id)
+
+    # if content_type == 'text':
+    # bot.sendMessage(chat_id, msg['text'])
+    msg_txt = msg['text']
+    words = msg_txt.split(' ')
+    # print(words[-1])
+
+    ai = apiai.ApiAI(CLIENT_ACCESS_TOKEN)
+    request = ai.text_request()
+    request.query = msg_txt
+    response = request.getresponse()
+    reply = response.read()
+    reply = reply.decode("utf-8")
+    print ('reply', reply)
+    parsed_json = json.loads(reply)
+    cmdLine = parsed_json['result']['resolvedQuery']
+    print('cmdLine', cmdLine)
+
+    args = cmdLine.split()
+    print('args', args)
+
+    if len(args) >= 2:
+        if '/go_to' == args[0]:
+            print('cmd=', 'go to')
+            print('arg=', args[1])
+            look_obj = args[1]
+            pass
+    print ('here')
+    print(look_obj)
+    bot.sendMessage(chat_id, ("I'll look for a " + str(look_obj) + "!"))
+    pass # telegram_handle
 
 def turn_logic(turn_distance):
     global turn_start_timer
@@ -65,6 +117,14 @@ def resetGlobalVariables():
     turn_end_timer = None
 pass
 
+# Main func
+# Telegram init
+bot = telepot.Bot("351373688:AAGVt6-abgby98JYSPuuNcl6axdOwrZggko")
+print(bot.getMe())
+MessageLoop(bot, telegram_handle).run_as_thread()
+print ('Listening ...')
+
+# The robot main function
 try:
     #Measure_init(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
     print GPIO_TRIGECHO_RIGHT
@@ -75,10 +135,15 @@ try:
     
     # initialize recognize_obstacle module
     recognize_obstacle_init()
-    
+
     shouldStop = False
-    
+
+    print ("Main loop active")
     while True:
+        if look_obj == None:
+            # Do nothing
+            continue;
+
         # robot moves formward only for 100 sec for now if no obstacle is on its way
         print("Get distance");
         distance_right, distance_front, distance_left = Measure_dist(GPIO_TRIGECHO_RIGHT,GPIO_TRIGECHO_FRONT,GPIO_TRIGECHO_LEFT)
@@ -92,14 +157,14 @@ try:
             # stop and turn; mark the turn
             # go to deeplearning function 
             #if the top prediction is X do the rest
-            print("Looking around")
-            results='beer'
+            results=look_obj
+            print("Looking around for " + results)
             for name in recognize_obstacle_process():
                 print("Name = " + name)
-#                 indices = [i for i, s in enumerate(mylist) if 'aa' in s]
                 if results in name:
-                	shouldStop= True
-                	break                
+                    print("Will stop")
+                    shouldStop= True
+                    break
             if (shouldStop):
                 break
             #else don't move
